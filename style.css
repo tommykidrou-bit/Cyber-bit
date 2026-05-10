@@ -1,0 +1,10 @@
+body {
+  background: black;
+  color: #00ff88;
+  font-family: monospace;
+  padding: 40px;
+}
+
+h1 {
+  font-size: 48px;
+}
