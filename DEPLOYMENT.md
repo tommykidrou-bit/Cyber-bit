@@ -41,6 +41,6 @@ Patikrinkite puslapį, mobilųjį meniu, skilčių nuorodas ir privatumo langą.
 
 ## Dar nebaigta
 
-- Pridėti originalius logotipo ir pagrindinio vaizdo failus; dabartinė iliustracija sukurta CSS.
-- Nurodyti tikrus kontaktinius kanalus.
+- Originalūs logotipo ir pagrindinio vaizdo failai dar nepridėti. Dabartiniame pagrindiniame puslapyje naudojama interaktyvi SVG tinklo vizualizacija.
+- Užklausos forma paruošia laišką į `LBitasx@gmail.com` lankytojo el. pašto programoje; automatinio serverinio siuntimo nėra.
 - Patikrinti Cloudflare projektą ir seną domeną paskyroje. Šie nustatymai iš šios kūrimo aplinkos nebuvo pasiekti.
