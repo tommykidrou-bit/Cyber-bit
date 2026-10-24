@@ -41,6 +41,8 @@ Patikrinkite puslapį, mobilųjį meniu, skilčių nuorodas ir privatumo langą.
 
 ## Dar nebaigta
 
-- Originalūs logotipo ir pagrindinio vaizdo failai dar nepridėti. Dabartiniame pagrindiniame puslapyje naudojama interaktyvi SVG tinklo vizualizacija.
+- Patvirtinto maketo dizainas įgyvendintas, originalus logotipas ir ZIP vaizdai paruošti WebP formatu kataloge `assets/`.
+- `assets/laboratory.webp` ir `assets/training.webp` kol kas yra iškarpos iš vartotojo patvirtinto maketo: atskirai pokalbyje parodytų laboratorijos ir mokymų originalių failų darbo aplinkoje nebuvo. Gavus originalus, pakeisti šiuos du failus ir jų HTML matmenis.
+- Žemės juosta naudoja vietinį vaizdą ir programuojamą besisukančio tinklelio, mazgų bei srautų animaciją (`globe.js`). Ji pristabdoma už ekrano, paslėptame skirtuke ir pagal `prefers-reduced-motion`; yra pristabdymo mygtukas. Nenaudojamos išorinės grafikos bibliotekos.
 - Užklausos forma paruošia laišką į `LBitasx@gmail.com` lankytojo el. pašto programoje; automatinio serverinio siuntimo nėra.
 - Patikrinti Cloudflare projektą ir seną domeną paskyroje. Šie nustatymai iš šios kūrimo aplinkos nebuvo pasiekti.

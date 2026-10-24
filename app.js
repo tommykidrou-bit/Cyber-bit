@@ -13,18 +13,6 @@ const privacy = document.querySelector('#privatumas');
 wireDialog(privacy);
 document.querySelector('#privacy-open').addEventListener('click', event => { event.preventDefault(); privacy.showModal(); });
 document.querySelector('#year').textContent = new Date().getFullYear();
-const topics = {
-  linux: ['01 / SISTEMOS', 'Atviros sistemos. Daugiau galimybių.', '„Linux“ aplinkų administravimas ir praktinis technologijų pažinimas.'],
-  tinklai: ['02 / INFRASTRUKTŪRA', 'Ryšys, kuris sujungia.', 'LAN, „Wi-Fi“ ir aiškiai suplanuota tinklo infrastruktūra.'],
-  saugumas: ['03 / APSAUGA', 'Suprasti riziką. Stiprinti apsaugą.', 'Saugumo konsultacijos ir autorizuotas sistemų vertinimas.'],
-  di: ['04 / LABORATORIJA', 'Idėjos, kurios tampa prototipais.', 'Planuojami DI agentų ir automatizavimo eksperimentai. Laboratorija vystoma.']
-};
-const nodes = document.querySelectorAll('[data-topic]');
-nodes.forEach(node => node.addEventListener('click', () => {
-  nodes.forEach(other => { const selected = other === node; other.classList.toggle('active', selected); other.setAttribute('aria-pressed', String(selected)); });
-  const content = topics[node.dataset.topic];
-  ['network-number', 'network-title', 'network-description'].forEach((id, index) => { document.getElementById(id).textContent = content[index]; });
-}));
 const form = document.querySelector('#contactForm');
 document.querySelectorAll('[data-inquiry]').forEach(button => button.addEventListener('click', () => {
   const value = button.dataset.inquiry;
