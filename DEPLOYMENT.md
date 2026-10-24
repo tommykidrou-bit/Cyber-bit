@@ -43,10 +43,12 @@ Patikrinkite puslapį, mobilųjį meniu, skilčių nuorodas ir privatumo langą.
 
 - Patvirtinto maketo dizainas įgyvendintas, originalus logotipas ir ZIP vaizdai paruošti WebP formatu kataloge `assets/`.
 - `assets/training.webp` pakeistas vartotojo pateiktu 1672 × 941 mokymų originalu. `assets/laboratory.webp` tebėra iškarpa iš patvirtinto maketo; gavus atskirą laboratorijos originalą, pakeisti šį failą ir jo HTML matmenis.
-- Žemės juosta naudoja tikrą besisukantį gaublį su lokalia žemynų tekstūra (`globe.js`, `assets/globe-texture.webp`). Viešo naudojimo „Natural Earth“ duomenų šaltinis nurodytas `assets/ATTRIBUTION.md`. Ji pristabdoma už ekrano, paslėptame skirtuke ir pagal `prefers-reduced-motion`; yra pristabdymo mygtukas. Nenaudojamos išorinės grafikos bibliotekos.
+- Vartotojo prašymu grąžintas originalus Žemės ir tinklų paveikslas `assets/earth.webp`; technologijų mygtukai išsaugoti. Gaublio programa nebenaudojama.
 - Užklausos forma paruošia laišką į `LBitasx@gmail.com` lankytojo el. pašto programoje; automatinio serverinio siuntimo nėra.
 - Patikrinti Cloudflare projektą ir seną domeną paskyroje. Šie nustatymai iš šios kūrimo aplinkos nebuvo pasiekti.
 
 ## Turinys
 
 Vartotojo prašymu viešai nerodomas registracijos adresas ir PVM statusas. Pašalintas tyrinėjimų krypčių blokas. Technologijų juostos mygtukai pasirenka užklausos temą arba nukreipia į saugumo skiltį.
+
+Mokymų anonso skiltis `#mokymasis` pakeista privatumo ir anonimiškumo pristatymu; išsaugotas esamas inkaras, kad nenutrūktų nuorodos. Programos tebėra pažymėtos kaip planuojamos.
