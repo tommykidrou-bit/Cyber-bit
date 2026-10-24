@@ -8,59 +8,65 @@
   if (!ctx) { button.hidden = true; return; }
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let paused = false, visible = false, frame = 0, previous = 0, angle = 0, width = 0, height = 0;
-  const routes = [[-.8, .3, .7, .5], [-.6, -.1, .8, .2], [-.2, .6, .6, -.2]];
+  const texture = new Image();
+  let pixels = null, textureWidth = 0, textureHeight = 0;
+  const size = 280;
+  const surface = document.createElement('canvas'); surface.width = surface.height = size;
+  const surfaceContext = surface.getContext('2d');
+  const image = surfaceContext.createImageData(size, size);
+  const samples = [];
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    const nx = (x - size / 2) / (size / 2 - 2), ny = (y - size / 2) / (size / 2 - 2);
+    const distance = nx * nx + ny * ny;
+    if (distance > 1) continue;
+    const z = Math.sqrt(1 - distance);
+    samples.push({ index: (y * size + x) * 4, longitude: Math.atan2(nx, z), latitude: Math.asin(-ny), light: .5 + .5 * Math.max(0, -.25 * nx - .3 * ny + .9 * z) });
+  }
+  texture.addEventListener('load', () => {
+    const reader = document.createElement('canvas'); reader.width = textureWidth = texture.width; reader.height = textureHeight = texture.height;
+    const rc = reader.getContext('2d'); rc.drawImage(texture, 0, 0);
+    pixels = rc.getImageData(0, 0, textureWidth, textureHeight).data; draw();
+  });
+  texture.src = 'assets/globe-texture.webp';
   function resize() {
-    const box = canvas.getBoundingClientRect();
-    width = box.width; height = box.height;
+    const box = canvas.getBoundingClientRect(); width = box.width; height = box.height;
     const ratio = Math.min(devicePixelRatio || 1, 1.5);
     canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    draw();
-  }
-  function project(lat, lon, radius) {
-    const x = Math.cos(lat) * Math.sin(lon + angle);
-    const z = Math.cos(lat) * Math.cos(lon + angle);
-    return [width * .57 + x * radius, height * 1.1 - Math.sin(lat) * radius * .7 - z * radius * .35, z];
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0); draw();
   }
   function draw() {
     ctx.clearRect(0, 0, width, height);
-    const r = Math.min(width * .44, height * 1.4);
-    ctx.lineWidth = .6;
-    // Projected latitude and longitude rings rotate as a single sphere.
-    for (let ring = 0; ring < 15; ring++) {
-      ctx.beginPath(); let drawing = false;
-      for (let step = 0; step <= 80; step++) {
-        const t = step / 80;
-        const lat = ring < 7 ? (ring - 3) * .22 : (t - .5) * Math.PI;
-        const lon = ring < 7 ? t * Math.PI * 2 : (ring - 7) * Math.PI / 4;
-        const [x,y,z] = project(lat,lon,r);
-        if (z < 0) { drawing = false; continue; }
-        if (!drawing) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-        drawing = true;
-      }
-      ctx.strokeStyle = 'rgba(46,178,233,0.23)'; ctx.stroke();
+    if (!pixels) return;
+    const radius = Math.min(width * .37, height * .46), cx = width * .55, cy = height * .46;
+    const halo = ctx.createRadialGradient(cx, cy, radius * .8, cx, cy, radius * 1.25);
+    halo.addColorStop(0, '#0a81af50'); halo.addColorStop(.65, '#0a81af30'); halo.addColorStop(1, '#0a81af00');
+    ctx.fillStyle = halo; ctx.fillRect(0, 0, width, height);
+    for (const point of samples) {
+      let u = (point.longitude + angle) / (Math.PI * 2) + .5;
+      u = u - Math.floor(u);
+      const v = .5 - point.latitude / Math.PI;
+      const source = (Math.min(textureHeight - 1, Math.floor(v * textureHeight)) * textureWidth + Math.floor(u * textureWidth)) * 4;
+      const i = point.index;
+      image.data[i] = pixels[source] * point.light;
+      image.data[i+1] = pixels[source+1] * point.light;
+      image.data[i+2] = pixels[source+2] * point.light;
+      image.data[i+3] = 255;
     }
-    for (let i=0; i<65; i++) {
-      const lat = Math.sin(i * 2.399) * 1.1, lon = i * 2.399;
-      const [x,y,z] = project(lat,lon,r);
-      if (z <= 0) continue;
-      ctx.beginPath();ctx.arc(x,y,1 + z,0,Math.PI*2);
-      ctx.fillStyle = `rgba(108,224,255,${.15 + z*.55})`;ctx.fill();
+    surfaceContext.putImageData(image, 0, 0);
+    ctx.drawImage(surface, cx-radius, cy-radius, radius*2, radius*2);
+    ctx.beginPath(); ctx.arc(cx,cy,radius,0,Math.PI*2); ctx.strokeStyle='#55dcff';ctx.lineWidth=1.2;ctx.stroke();
+    // Orbital connections and moving packets around the rotating Earth.
+    for (let i=0;i<3;i++) {
+      const tilt = -.4 + i*.5, a = radius*1.16, b = radius*.4;
+      ctx.save();ctx.translate(cx,cy);ctx.rotate(tilt);
+      ctx.beginPath();ctx.ellipse(0,0,a,b,0,0,Math.PI*2);ctx.strokeStyle='rgba(51,190,239,.45)';ctx.lineWidth=.8;ctx.stroke();
+      const t=angle*2+i*2;ctx.beginPath();ctx.arc(Math.cos(t)*a,Math.sin(t)*b,2.3,0,Math.PI*2);ctx.fillStyle='#c9faff';ctx.fill();ctx.restore();
     }
-    routes.forEach(([a,b,c,d], i) => {
-      const t = (angle * .8 + i / 3) % 1;
-      const [x1,y1] = project(b,a,r), [x2,y2] = project(d,c,r);
-      const mx=(x1+x2)/2, my=Math.min(y1,y2)-r*.5;
-      ctx.beginPath();ctx.moveTo(x1,y1);ctx.quadraticCurveTo(mx,my,x2,y2);ctx.strokeStyle='rgba(54,194,243,0.27)';ctx.stroke();
-      const x=(1-t)**2*x1+2*(1-t)*t*mx+t*t*x2;
-      const y=(1-t)**2*y1+2*(1-t)*t*my+t*t*y2;
-      ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fillStyle='#a4efff';ctx.fill();
-    });
   }
   function animate(time) {
     frame=0;
     if (previous && time-previous<40) { frame=requestAnimationFrame(animate);return; }
-    angle += previous ? Math.min(time-previous,80)*.000035 : 0;
+    angle += previous ? Math.min(time-previous,80)*.00012 : 0;
     previous=time;draw();
     if (!paused && !reduced.matches && visible && !document.hidden) frame=requestAnimationFrame(animate);
   }
